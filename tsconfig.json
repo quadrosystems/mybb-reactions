@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "lib": ["es2016", "dom", "es5"],
+    "outDir": "./dist",
+    "module": "CommonJS",
+    "allowUmdGlobalAccess": true,
+    "noImplicitAny": true,
+    "moduleResolution": "node",
+    "strict": false,
+    "target": "es5",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "declaration": true,
+    "sourceMap": true,
+    "typeRoots": ["node_modules/@types"],
+    "jsx": "react",
+    "resolveJsonModule": true
+  },
+  "include": ["./src/*"]
+}
