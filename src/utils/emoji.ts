@@ -86,7 +86,7 @@ export const getI18nConfig = () => {
 
   return {
     search: 'Поиск',
-    clear: 'Отчистить', // Accessible label on "clear" button
+    clear: 'Очистить', // Accessible label on "clear" button
     notfound: 'Ничего не найдено',
     categories: {
       search: 'Результаты поиска',
