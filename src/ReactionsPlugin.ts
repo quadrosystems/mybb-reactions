@@ -45,12 +45,57 @@ const TEST_CONFIG = {
 
 // =============================================================================
 
+// не используется уже давно
+const TEST_DATA2: api.PostData = {
+  "postId": 2,
+  "reactions": {
+    "derelict_house_building": {
+      "reactionCode": "derelict_house_building",
+      "users": [
+        {
+          "userId": 2,
+          "userLogin": "alois",
+          "reactedAt": 1640000050,
+        }
+      ],
+    },
+    "grinning": {
+      "reactionCode": "grinning",
+      "users": [
+        {
+          "userId": 2,
+          "userLogin": "alois",
+          "reactedAt": 1640000032,
+        },
+        {
+          "userId": 4,
+          "userLogin": "alois_test2",
+          "reactedAt": 1640000031,
+        }
+      ]
+    },
+    "woman-woman-girl-boy": {
+      "reactionCode": "woman-woman-girl-boy",
+      "users": [
+        {
+          "userId": 4,
+          "userLogin": "alois_test2",
+          "reactedAt": 1640000010,
+        }
+      ]
+    },
+  },
+};
+
+// =============================================================================
+
 const _testAddFakeUsers = (reactions: Record<string, api.ReactionData>) => {
   const _randomInt = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
   const _createFakeUsers = (num: number) => {
     return Array.from(Array(num).keys()).map((k) => ({
-      "userId": 10000 + k,
-      "userLogin": `_fake_user_${k}`,
+      userId: 10000 + k,
+      userLogin: `_fake_user_${k}`,
+      reactedAt: Math.floor(Date.now() / 1000) - _randomInt(0, 60*60*24*7),
     }));
   };
 
@@ -61,7 +106,7 @@ const _testAddFakeUsers = (reactions: Record<string, api.ReactionData>) => {
 
     const fakeUsers = _createFakeUsers(numFakeUsers);
     const users = [
-      ...fakeUsers.slice(0,numFakeUsersBefore),
+      ...fakeUsers.slice(0, numFakeUsersBefore),
       ...val.users,
       ...fakeUsers.slice(numFakeUsersBefore),
     ];

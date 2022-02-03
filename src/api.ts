@@ -74,6 +74,7 @@ export async function callRusff(method: string, params: any): Promise<any> {
 export type UserData = {
   userId: number,
   userLogin: string,
+  reactedAt: number,
 }
 export type ReactionData = {
   reactionCode: string,
@@ -91,6 +92,7 @@ const transformPostReaction = (data: any) => {
   return {
     userId: data['user']['user_id'],
     userLogin: data['user']['user_login'],
+    reactedAt: data['created_at'],
   };
 }
 const transformPostReactions = (data: any): any => {

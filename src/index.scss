@@ -3,7 +3,7 @@
 
 
 .reactions-root {
-  // outline: 1px solid blue;
+  // outline: 1px solid cyan;
   padding: 0 5px,
 }
 
@@ -11,11 +11,20 @@
 
 .reactions-container {
   display: flex;
-  flex-flow: row wrap;
-
-  // outline: 1px solid cyan;
+  // flex-flow: row wrap;
 
   gap: 4px;
+
+  // outline: 1px solid blue;
+}
+
+.reaction-counters-container {
+  display: flex;
+  flex-flow: row wrap;
+
+  gap: 4px;
+
+  // outline: 1px solid blueviolet;
 }
 
 /* ========================================================================== */
@@ -122,4 +131,5 @@ $color-chip-clicked-bg-hover: #b6e3ff;
   animation: icon-spin 0.6s linear infinite;
 }
 
+/* ========================================================================== */
 /* ========================================================================== */

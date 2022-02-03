@@ -1,4 +1,5 @@
 import React from 'react';
+import { Flipper, Flipped } from 'react-flip-toolkit';
 
 import ReactionCounter from './ReactionCounter';
 import ReactionPicker from './ReactionPicker';
@@ -9,42 +10,24 @@ import logger from './utils/logger';
 
 // =============================================================================
 
-const TEST_DATA2: api.PostData = {
-  "postId": 2,
-  "reactions": {
-    "derelict_house_building": {
-      "reactionCode": "derelict_house_building",
-      "users": [
-        {
-          "userId": 2,
-          "userLogin": "alois",
-        }
-      ],
-    },
-    "grinning": {
-      "reactionCode": "grinning",
-      "users": [
-        {
-          "userId": 2,
-          "userLogin": "alois",
-        },
-        {
-          "userId": 4,
-          "userLogin": "alois_test2",
-        }
-      ]
-    },
-    "woman-woman-girl-boy": {
-      "reactionCode": "woman-woman-girl-boy",
-      "users": [
-        {
-          "userId": 4,
-          "userLogin": "alois_test2",
-        }
-      ]
-    },
-  },
-};
+// Сортировка по кол-ву и дате, в убывающем порядке.
+const reactionsComparator = (reactionA: api.ReactionData, reactionB: api.ReactionData) => {
+  const countA = reactionA.users.length;
+  const countB = reactionB.users.length;
+
+  const lastReactedAtA = Math.max( ...reactionA.users.map(({ reactedAt }) => reactedAt) );
+  const lastReactedAtB = Math.max( ...reactionB.users.map(({ reactedAt }) => reactedAt) );
+
+  if (countA > countB) {
+    return -1;
+  }
+  if (countA < countB) {
+    return 1;
+  }
+  if (countA === countB) {
+    return lastReactedAtB - lastReactedAtA;
+  }
+}
 
 // =============================================================================
 
@@ -76,6 +59,7 @@ const ReactionsContainer: React.FC<ReactionsContainerProps> = (props) => {
 
     if (currentUserReactionCodes.includes(reactionCode)) {
       // delete
+
       const newReactions = {
         ...reactions,
         [reactionCode]: {
@@ -96,13 +80,21 @@ const ReactionsContainer: React.FC<ReactionsContainerProps> = (props) => {
 
     } else {
       // add
+
+      const newUser = {
+        userId: currentUserId,
+        userLogin: currentUserLogin,
+        reactedAt: Math.floor(Date.now() / 1000),
+      };
+
       const newReaction = reactions[reactionCode] ? ({
         reactionCode,
-        users: [...reactions[reactionCode].users, { userId: currentUserId, userLogin: currentUserLogin }],
+        users: [...reactions[reactionCode].users, newUser],
       }) : ({
         reactionCode,
-        users: [{ userId: currentUserId, userLogin: currentUserLogin }],
+        users: [newUser],
       });
+
       const newReactions = {
         ...reactions,
         [reactionCode]: newReaction,
@@ -119,40 +111,53 @@ const ReactionsContainer: React.FC<ReactionsContainerProps> = (props) => {
   };
 
 
+  const handleReactionCounterClick = (reactionCode: string) => {
+    logger.debug('[onClick()]', reactionCode);
+    toggleReaction(reactionCode);
+  }
 
-  const renderedReactionCounters = emojiUtils.getIdsInCanonicalOrder()
-    .filter((reactionCode) => (reactions[reactionCode]))
-    .map((reactionCode) => (
-      <ReactionCounter
-        key={reactionCode}
-        reactionCode={reactionCode}
-        users={reactions[reactionCode].users}
-        disabled={isLoading || (currentUserId === 1)}
-        onClick={(reactionCode) => {
-          logger.debug('[onClick()]', reactionCode);
-          toggleReaction(reactionCode);
-        }}
-      />
-    ));
+  const reactionsSortedArr = Object.values(reactions).sort(reactionsComparator);
+
+  const renderedReactionCounters = (
+    <Flipper flipKey={reactionsSortedArr.map((reactionData) => reactionData.reactionCode).join('')}>
+      <div className="reaction-counters-container">
+        {reactionsSortedArr.map((reactionData) => (
+          <Flipped key={reactionData.reactionCode} flipId={reactionData.reactionCode}>
+            <div>
+              <ReactionCounter
+                reactionCode={reactionData.reactionCode}
+                users={reactionData.users}
+                disabled={isLoading || (currentUserId === 1)}
+                onClick={handleReactionCounterClick}
+              />
+            </div>
+          </Flipped>
+        ))}
+      </div>
+    </Flipper>
+  );
+
 
   return (
-    <div className="reactions-container">
-      {(currentUserId !== 1) && (
-      <ReactionPicker
-        disabled={isLoading || (currentUserId === 1)}
-        onSelected={(reactionCode) => {
-          logger.debug('[onSelected()]', reactionCode);
-          toggleReaction(reactionCode);
-        }}
-      />
-      )}
-      {renderedReactionCounters}
-      {isLoading ? (
-        <LoadingIcon size={26} />
-      ) : (
-        null
-      )}
-    </div>
+    <>
+      <div className="reactions-container">
+        {(currentUserId !== 1) && (
+        <ReactionPicker
+          disabled={isLoading || (currentUserId === 1)}
+          onSelected={(reactionCode) => {
+            logger.debug('[onSelected()]', reactionCode);
+            toggleReaction(reactionCode);
+          }}
+        />
+        )}
+        {renderedReactionCounters}
+        {isLoading ? (
+          <LoadingIcon size={26} />
+        ) : (
+          null
+        )}
+      </div>
+    </>
   );
 }
 
