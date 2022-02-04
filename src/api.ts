@@ -82,8 +82,7 @@ export type ReactionData = {
 }
 export type PostData = {
   postId: number,
-  // reactions: ReactionData[],
-  reactions: Record<string, ReactionData>,
+  reactions: ReactionData[],
 }
 
 // -----------------------------------------------------------------------------
@@ -96,15 +95,14 @@ const transformPostReaction = (data: any) => {
   };
 }
 const transformPostReactions = (data: any): any => {
-  const result: Record<string, ReactionData> = {};
+  const result: ReactionData[] = [];
   Object.keys(data).forEach((key) => {
-    result[key] = {
+    result.push({
       reactionCode: key,
       users: data[key].map((item: any) => transformPostReaction(item)),
-    };
+    });
   });
   return result;
-
 }
 const transformReactionsIndex = (data: any): PostData[] => {
   return data.map((item: any) => {

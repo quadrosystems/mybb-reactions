@@ -98,9 +98,9 @@ const run = async () => {
 
   // log warning about reactions not included in config
   const _warnAboutReactionsNotInConfig = () => {
-    const reactionCodes = new Set( reactionsIndexData.map(({ reactions }) => Object.keys(reactions)).flat() );
-    const reactionCodesNotInConfig = Array.from(reactionCodes)
-      .filter((reactionCode) => !emojiUtils.isReactionCodeInConfig(reactionCode));
+    const reactionCodes = reactionsIndexData.map(({ reactions }) => reactions.map(({ reactionCode }) => reactionCode)).flat();
+    const reactionCodesUnique = Array.from(new Set(reactionCodes));
+    const reactionCodesNotInConfig = reactionCodesUnique.filter((reactionCode) => !emojiUtils.isReactionCodeInConfig(reactionCode));
     if (reactionCodesNotInConfig.length !== 0) {
       logger.debug(`SOME REACTION CODES PRESENT IN DB, BUT NOT INCLUDED IN CONFIG:`, reactionCodesNotInConfig);
     }
@@ -109,10 +109,10 @@ const run = async () => {
 
   // filter reactions not included in config
   reactionsIndexData = reactionsIndexData.map(({ postId, reactions }) => {
-    const filteredEntries = Object.entries(reactions).filter(([reactionCode, reactionData]) => {
-      return emojiUtils.isReactionCodeInConfig(reactionCode);
-    });
-    return { postId, reactions: Object.fromEntries(filteredEntries) };
+    return {
+      postId,
+      reactions: reactions.filter((reactionData) => emojiUtils.isReactionCodeInConfig(reactionData.reactionCode))
+    };
   })
 
 

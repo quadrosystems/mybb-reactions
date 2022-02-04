@@ -33,23 +33,23 @@ const reactionsComparator = (reactionA: api.ReactionData, reactionB: api.Reactio
 
 type ReactionsContainerProps = {
   postId: number,
-  reactions: Record<string, api.ReactionData>,
+  reactions: api.ReactionData[],
 };
 
 const ReactionsContainer: React.FC<ReactionsContainerProps> = (props) => {
   const { postId, reactions: initialReactions } = props;
 
-  const [reactions, setReactions] = React.useState<Record<string, api.ReactionData>>(initialReactions);
+  const [reactions, setReactions] = React.useState<api.ReactionData[]>(initialReactions);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
   const currentUserId: number = (window as any)['UserID'];
   const currentUserLogin: string = (window as any)['UserLogin'];
-
   const currentBoardID: number = (window as any)['BoardID'];
 
 
   const toggleReaction = (reactionCode: string) => {
-    const currentUserReactionCodes = Object.values(reactions).reduce<string[]>((acc, { reactionCode, users }) => {
+
+    const currentUserReactionCodes = reactions.reduce<string[]>((acc, { reactionCode, users }) => {
       const user = users.find(({ userId }) => (userId === currentUserId));
       if (user) {
         acc.push(reactionCode);
@@ -60,15 +60,13 @@ const ReactionsContainer: React.FC<ReactionsContainerProps> = (props) => {
     if (currentUserReactionCodes.includes(reactionCode)) {
       // delete
 
-      const newReactions = {
-        ...reactions,
-        [reactionCode]: {
-          reactionCode,
-          users: reactions[reactionCode].users.filter(({ userId }) => (userId !== currentUserId)),
-        }
-      };
-      if (newReactions[reactionCode].users.length === 0) {
-        delete newReactions[reactionCode];
+      const newReactions = [...reactions];
+      const reactionIx = newReactions.findIndex((reactionData) => reactionData.reactionCode === reactionCode);
+
+      newReactions[reactionIx].users = newReactions[reactionIx].users.filter(({ userId }) => (userId !== currentUserId));
+
+      if (newReactions[reactionIx].users.length === 0) {
+        newReactions.splice(reactionIx, 1);
       }
 
       setIsLoading(true);
@@ -87,18 +85,16 @@ const ReactionsContainer: React.FC<ReactionsContainerProps> = (props) => {
         reactedAt: Math.floor(Date.now() / 1000),
       };
 
-      const newReaction = reactions[reactionCode] ? ({
-        reactionCode,
-        users: [...reactions[reactionCode].users, newUser],
-      }) : ({
-        reactionCode,
-        users: [newUser],
-      });
-
-      const newReactions = {
-        ...reactions,
-        [reactionCode]: newReaction,
-      };
+      const newReactions = [...reactions];
+      const reactionIx = newReactions.findIndex((reactionData) => reactionData.reactionCode === reactionCode);
+      if (reactionIx === -1) {
+        newReactions.push({
+          reactionCode,
+          users: [newUser],
+        });
+      } else {
+        newReactions[reactionIx].users = [...newReactions[reactionIx].users, newUser]
+      }
 
       setIsLoading(true);
       api.reactionsAdd(currentBoardID, currentUserId, postId, reactionCode)
@@ -116,9 +112,9 @@ const ReactionsContainer: React.FC<ReactionsContainerProps> = (props) => {
     toggleReaction(reactionCode);
   }
 
-  const reactionsSortedArr = Object.values(reactions).sort(reactionsComparator);
+  const reactionsSorted = reactions.sort(reactionsComparator);
 
-  const renderedReactionCounters = reactionsSortedArr.map((reactionData) => (
+  const renderedReactionCounters = reactionsSorted.map((reactionData) => (
     <Flipped key={reactionData.reactionCode} flipId={reactionData.reactionCode}>
       <div>
         <ReactionCounter
@@ -133,7 +129,7 @@ const ReactionsContainer: React.FC<ReactionsContainerProps> = (props) => {
 
 
   return (
-    <Flipper flipKey={reactionsSortedArr.map((reactionData) => reactionData.reactionCode).join('')}>
+    <Flipper flipKey={reactionsSorted.map((reactionData) => reactionData.reactionCode).join('')}>
       <div className="reactions-container">
         {(currentUserId !== 1) && (
         <ReactionPicker
