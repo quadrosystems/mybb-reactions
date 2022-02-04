@@ -4,7 +4,7 @@ import EmojiMartDataAll from 'emoji-mart/data/all.json';
 import { Config } from '../ReactionsPlugin';
 import logger from '../utils/logger';
 
-// -----------------------------------------------------------------------------
+// =============================================================================
 
 const EMOJIMART_DATA_IDS_IN_CANONICAL_ORDER: string[] = [];
 EmojiMartDataAll.categories.forEach(({ id, emojis }: { id: string, emojis: string[] }) => {
@@ -14,6 +14,8 @@ EmojiMartDataAll.categories.forEach(({ id, emojis }: { id: string, emojis: strin
 const CUSTOM_EMOJIS_DATA: Map<string, EmojiMart.CustomEmoji> = new Map();
 
 let INCLUDE_NORMAL_CATEGORIES: string[] = [];
+
+let ALL_NORMAL_REACTION_CODES: string[] = [];
 
 // -----------------------------------------------------------------------------
 
@@ -34,6 +36,11 @@ export const setConfig = (config: Config) => {
   });
 
   INCLUDE_NORMAL_CATEGORIES = [...config.includeCategories];
+
+  ALL_NORMAL_REACTION_CODES = EmojiMartDataAll.categories
+    .filter(({ id }) => INCLUDE_NORMAL_CATEGORIES.includes(id))
+    .map(({ emojis }) => emojis)
+    .flat();
 }
 
 // -----------------------------------------------------------------------------
@@ -50,8 +57,9 @@ export const getCustomEmojiDataAll = (): EmojiMart.CustomEmoji[] => {
   return Array.from(CUSTOM_EMOJIS_DATA.values());
 };
 
-export const getCustomEmojiDataById = (id: string): EmojiMart.CustomEmoji => {
-  return CUSTOM_EMOJIS_DATA.get(id);
+// Возвращает null когда костомная эмоджи есть в БД, но нет в конфиге
+export const getCustomEmojiDataById = (id: string): EmojiMart.CustomEmoji | null => {
+  return CUSTOM_EMOJIS_DATA.has(id) ? CUSTOM_EMOJIS_DATA.get(id) : null;
 };
 
 
@@ -74,6 +82,16 @@ export const getCategoriesOrder = () => {
     ...INCLUDE_NORMAL_CATEGORIES,
   ];
 };
+
+// -----------------------------------------------------------------------------
+
+export const isReactionCodeInConfig = (reactionCode: string) => {
+  if (reactionCode[0] !== '_') {
+    return ALL_NORMAL_REACTION_CODES.includes(reactionCode);
+  } else {
+    return CUSTOM_EMOJIS_DATA.has(reactionCode);
+  }
+}
 
 // -----------------------------------------------------------------------------
 

@@ -118,28 +118,22 @@ const ReactionsContainer: React.FC<ReactionsContainerProps> = (props) => {
 
   const reactionsSortedArr = Object.values(reactions).sort(reactionsComparator);
 
-  const renderedReactionCounters = (
-    <Flipper flipKey={reactionsSortedArr.map((reactionData) => reactionData.reactionCode).join('')}>
-      <div className="reaction-counters-container">
-        {reactionsSortedArr.map((reactionData) => (
-          <Flipped key={reactionData.reactionCode} flipId={reactionData.reactionCode}>
-            <div>
-              <ReactionCounter
-                reactionCode={reactionData.reactionCode}
-                users={reactionData.users}
-                disabled={isLoading || (currentUserId === 1)}
-                onClick={handleReactionCounterClick}
-              />
-            </div>
-          </Flipped>
-        ))}
+  const renderedReactionCounters = reactionsSortedArr.map((reactionData) => (
+    <Flipped key={reactionData.reactionCode} flipId={reactionData.reactionCode}>
+      <div>
+        <ReactionCounter
+          reactionCode={reactionData.reactionCode}
+          users={reactionData.users}
+          disabled={isLoading || (currentUserId === 1)}
+          onClick={handleReactionCounterClick}
+        />
       </div>
-    </Flipper>
-  );
+    </Flipped>
+  ));
 
 
   return (
-    <>
+    <Flipper flipKey={reactionsSortedArr.map((reactionData) => reactionData.reactionCode).join('')}>
       <div className="reactions-container">
         {(currentUserId !== 1) && (
         <ReactionPicker
@@ -150,14 +144,16 @@ const ReactionsContainer: React.FC<ReactionsContainerProps> = (props) => {
           }}
         />
         )}
-        {renderedReactionCounters}
-        {isLoading ? (
-          <LoadingIcon size={26} />
-        ) : (
-          null
-        )}
+        <div className="reaction-counters-container">
+          {renderedReactionCounters}
+          {isLoading ? (
+            <LoadingIcon size={26} />
+          ) : (
+            null
+          )}
+        </div>
       </div>
-    </>
+    </Flipper>
   );
 }
 

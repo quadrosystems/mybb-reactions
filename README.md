@@ -4,7 +4,7 @@
 ```html
 <script src="http://127.0.0.1:9000/index.js"></script>
 <script>
-ReactionsPlugin.init({
+ReactionsPlugin.setConfig({
   includeCategories: ['people', 'foods', 'objects', 'symbols', 'activity'],
   customEmojis: [
     {
