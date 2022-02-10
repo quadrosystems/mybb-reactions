@@ -20,6 +20,7 @@ export type Config = {
   }[],
   includeCategories: NormalCategory[],
   debug: boolean,
+  disable: boolean,
 }
 
 const ALL_NORMAL_CATEGORIES: NormalCategory[] = ['people', 'nature', 'foods', 'activity', 'places', 'objects', 'symbols', 'flags'];
@@ -56,6 +57,7 @@ const DEFAULT_CONFIG: Config = {
   customEmojis: [],
   includeCategories: ALL_NORMAL_CATEGORIES,
   debug: process.env.NODE_ENV === 'development' ? true : false,
+  disable: false,
 };
 
 const setConfig = (newConfig?: Partial<Config>) => {
@@ -80,6 +82,10 @@ const setConfig = (newConfig?: Partial<Config>) => {
 }
 
 const run = async () => {
+  logger.info(`Starting run(), config.disable=${config.disable}`);
+  if (config.disable) {
+    return
+  }
 
   const collectPagePostIds = () => {
     return Array.from(document.querySelectorAll('.post')).map((elem) => {

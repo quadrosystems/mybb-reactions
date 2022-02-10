@@ -43,6 +43,7 @@ ReactionsPlugin.setConfig({
 | Name | Type | Default | Description |
 | ---- | :--: | ------- | ----------- |
 | `debug` | _boolean_ | false | Выводить в консоль доп. инфу для разработчика |
+| `disable` | _boolean_ | false | Отключить плагин |
 | `includeCategories` | _Array\<String\>_ | `['people', 'nature', 'foods', 'activity', 'places', 'objects', 'symbols', 'flags']` | Категории эмоджи которые будут отображены в пикере. Значение должно быть подмножеством дефолтного списка. |
 | `customEmojis` | _Array\<Object\>_ | `[]` | Массив кастомных эмоджи. |
 | `customEmojis.*.id` | _String_ | | Айдишник кастомной эмоджи. **Должен начинаться с `'_'`**. (Например: `'_popcat'`.) |
