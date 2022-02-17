@@ -1,7 +1,5 @@
 import * as api from '../api';
 
-// =============================================================================
-
 // не используется уже давно
 export const TEST_DATA2: api.PostData = {
   "postId": 2,
@@ -44,8 +42,6 @@ export const TEST_DATA2: api.PostData = {
   },
 };
 
-// =============================================================================
-
 export const _testAddFakeUsers = (reactions: Record<string, api.ReactionData>) => {
   const _randomInt = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
   const _createFakeUsers = (num: number) => {
@@ -72,8 +68,6 @@ export const _testAddFakeUsers = (reactions: Record<string, api.ReactionData>) =
   });
   return result;
 }
-
-// =============================================================================
 
 export const TEST_CUSTOM_EMOJIS = [
   {
@@ -107,5 +101,3 @@ export const TEST_CONFIG = {
   // debug: true,
   includeCategories: ['people', 'foods', 'objects', 'symbols'],
 }
-
-// =============================================================================

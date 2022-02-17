@@ -1,9 +1,6 @@
 import consola, {
-  BrowserReporter,
   ConsolaReporter, ConsolaReporterLogObject, ConsolaReporterArgs,
 } from 'consola';
-
-// =============================================================================
 
 // https://github.com/unjs/consola/blob/master/src/reporters/browser.js
 
@@ -75,8 +72,6 @@ class Reporter implements ConsolaReporter {
   }
 }
 
-
-// =============================================================================
 
 const logger = consola.create({
   reporters: [

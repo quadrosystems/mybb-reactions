@@ -1,7 +1,3 @@
-
-
-// -----------------------------------------------------------------------------
-
 export class JsonRpcError extends Error {
   errorData?: any;
 
@@ -51,9 +47,6 @@ export async function callJsonRpc(url: string, method: string, params: any): Pro
 export async function callRusff(method: string, params: any): Promise<any> {
   const url = 'https://core.rusff.me/rusff.php';
 
-  // const check = {
-  //   'service': 'QServices',
-  // };
   const check = {
     "board_id": (window as any)['BoardID'],
     "group_id": (window as any)['GroupID'],
@@ -69,8 +62,6 @@ export async function callRusff(method: string, params: any): Promise<any> {
   });
 }
 
-// -----------------------------------------------------------------------------
-
 export type UserData = {
   userId: number,
   userLogin: string,
@@ -84,8 +75,6 @@ export type PostData = {
   postId: number,
   reactions: ReactionData[],
 }
-
-// -----------------------------------------------------------------------------
 
 const transformPostReaction = (data: any) => {
   return {
@@ -112,8 +101,6 @@ const transformReactionsIndex = (data: any): PostData[] => {
     };
   });
 }
-
-// -----------------------------------------------------------------------------
 
 export async function reactionsIndex(
   boardId: number,
@@ -159,5 +146,3 @@ export async function reactionsDelete(
   };
   return await callRusff('reactions/delete', params);
 }
-
-// -----------------------------------------------------------------------------

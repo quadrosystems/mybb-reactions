@@ -2,9 +2,6 @@ import * as EmojiMart from 'emoji-mart';
 import EmojiMartDataAll from 'emoji-mart/data/all.json';
 
 import { Config } from '../ReactionsPlugin';
-import logger from '../utils/logger';
-
-// =============================================================================
 
 const EMOJIMART_DATA_IDS_IN_CANONICAL_ORDER: string[] = [];
 EmojiMartDataAll.categories.forEach(({ id, emojis }: { id: string, emojis: string[] }) => {
@@ -16,8 +13,6 @@ const CUSTOM_EMOJIS_DATA: Map<string, EmojiMart.CustomEmoji> = new Map();
 let INCLUDE_NORMAL_CATEGORIES: string[] = [];
 
 let ALL_NORMAL_REACTION_CODES: string[] = [];
-
-// -----------------------------------------------------------------------------
 
 const makeCustomEmojiData = (customEmoji: Config['customEmojis'][number]) => {
   return {
@@ -42,8 +37,6 @@ export const setConfig = (config: Config) => {
     .map(({ emojis }) => emojis)
     .flat();
 }
-
-// -----------------------------------------------------------------------------
 
 export const getIdsInCanonicalOrder = () => {
   return [
@@ -83,8 +76,6 @@ export const getCategoriesOrder = () => {
   ];
 };
 
-// -----------------------------------------------------------------------------
-
 export const isReactionCodeInConfig = (reactionCode: string) => {
   if (reactionCode[0] !== '_') {
     return ALL_NORMAL_REACTION_CODES.includes(reactionCode);
@@ -92,8 +83,6 @@ export const isReactionCodeInConfig = (reactionCode: string) => {
     return CUSTOM_EMOJIS_DATA.has(reactionCode);
   }
 }
-
-// -----------------------------------------------------------------------------
 
 export const getI18nConfig = () => {
   const userLanguage = (window as any)['UserLanguage'];

@@ -4,6 +4,4 @@ import './index.scss'
 
 import ReactionsPlugin from './ReactionsPlugin';
 
-// =============================================================================
-
 export default ReactionsPlugin;

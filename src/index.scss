@@ -2,10 +2,8 @@
 
 .reactions-root {
   // outline: 1px solid cyan;
-  padding: 0 5px,
+  padding: 0 5px;
 }
-
-/* ========================================================================== */
 
 .reactions-container {
   display: flex;
@@ -24,8 +22,6 @@
 
   // outline: 1px solid blueviolet;
 }
-
-/* ========================================================================== */
 
 $color-chip-border: #d0d7de;
 $color-chip-bg: #f6f8fa;
@@ -66,8 +62,6 @@ $color-chip-clicked-bg-hover: #b6e3ff;
 }
 
 
-/* ========================================================================== */
-
 .reaction-counter {
   border-radius: 50% / 100%;
 
@@ -95,8 +89,6 @@ $color-chip-clicked-bg-hover: #b6e3ff;
   font-size: 14px;
 }
 
-/* ========================================================================== */
-
 .reaction-picker {
   position: relative;
 }
@@ -114,8 +106,6 @@ $color-chip-clicked-bg-hover: #b6e3ff;
   z-index: 999;
 }
 
-/* ========================================================================== */
-
 @keyframes icon-spin {
   0% {
     transform: rotate(0deg);
@@ -128,6 +118,3 @@ $color-chip-clicked-bg-hover: #b6e3ff;
   border-radius: 50%;
   animation: icon-spin 0.6s linear infinite;
 }
-
-/* ========================================================================== */
-/* ========================================================================== */

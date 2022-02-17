@@ -1,7 +1,7 @@
 {
   "name": "@quadrosystems/mybb-reactions",
-  "version": "0.0.1",
-  "description": "Reactions plugin for mybb.ru",
+  "version": "1.0.0",
+  "description": "Reactions plugin for quadroboards.ru",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "scripts": {
@@ -14,7 +14,8 @@
     "url": "git+https://github.com/quadrosystems/mybb-reactions"
   },
   "keywords": [
-    "mybb"
+    "mybb",
+    "quadroboards"
   ],
   "author": "",
   "license": "ISC",

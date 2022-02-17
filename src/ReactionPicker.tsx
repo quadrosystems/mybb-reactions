@@ -4,8 +4,6 @@ import cx from 'classnames';
 
 import * as emojiUtils from './utils/emoji';
 
-// -----------------------------------------------------------------------------
-
 const PlusIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"

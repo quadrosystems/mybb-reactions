@@ -6,9 +6,7 @@ import ReactionsContainer from './ReactionsContainer';
 import * as api from './api';
 import * as emojiUtils from './utils/emoji';
 import logger from './utils/logger';
-import * as testingUtils from './utils/testing';
-
-// =============================================================================
+// import * as testingUtils from './utils/testing';
 
 type NormalCategory = 'people' | 'nature' | 'foods' | 'activity' | 'places' | 'objects' | 'symbols' | 'flags';
 
@@ -27,8 +25,6 @@ const ALL_NORMAL_CATEGORIES: NormalCategory[] = ['people', 'nature', 'foods', 'a
 
 
 let config: Config;
-
-// =============================================================================
 
 const validateConfig = (config: Config) => {
   for (const item of config.customEmojis) {
@@ -50,8 +46,6 @@ const validateConfig = (config: Config) => {
 
   return true;
 }
-
-// =============================================================================
 
 const DEFAULT_CONFIG: Config = {
   customEmojis: [],
@@ -155,8 +149,6 @@ const init = async () => {
     run();
   }
 }
-
-// =============================================================================
 
 init();
 

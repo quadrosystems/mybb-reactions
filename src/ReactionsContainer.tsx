@@ -5,10 +5,7 @@ import ReactionCounter from './ReactionCounter';
 import ReactionPicker from './ReactionPicker';
 import LoadingIcon from './LoadingIcon';
 import * as api from './api';
-import * as emojiUtils from './utils/emoji';
 import logger from './utils/logger';
-
-// =============================================================================
 
 // Сортировка по кол-ву и дате, в убывающем порядке.
 const reactionsComparator = (reactionA: api.ReactionData, reactionB: api.ReactionData) => {
@@ -28,8 +25,6 @@ const reactionsComparator = (reactionA: api.ReactionData, reactionB: api.Reactio
     return lastReactedAtB - lastReactedAtA;
   }
 }
-
-// =============================================================================
 
 type ReactionsContainerProps = {
   postId: number,
@@ -144,9 +139,7 @@ const ReactionsContainer: React.FC<ReactionsContainerProps> = (props) => {
           {renderedReactionCounters}
           {isLoading ? (
             <LoadingIcon size={26} />
-          ) : (
-            null
-          )}
+          ) : null}
         </div>
       </div>
     </Flipper>

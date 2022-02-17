@@ -6,8 +6,6 @@ import cx from 'classnames';
 import * as emojiUtils from './utils/emoji';
 import * as api from './api';
 
-// -----------------------------------------------------------------------------
-
 const ReactionCounterTooltipContent: React.FC<{ users: api.UserData[] }> = (props) => {
   const { users } = props;
 
@@ -62,8 +60,6 @@ const ReactionCounterTooltipContent: React.FC<{ users: api.UserData[] }> = (prop
   );
 
 }
-
-// -----------------------------------------------------------------------------
 
 type ReactionCounterProps = {
   reactionCode: string;
