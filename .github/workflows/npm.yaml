@@ -1,0 +1,22 @@
+name: Build and publish to NPM
+on:
+  push:
+    tags:
+      - '**'
+jobs:
+  build_and_publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Setup environment
+        uses: actions/setup-node@v2
+        with:
+          node-version: '12.x'
+          registry-url: 'https://registry.npmjs.org'
+          scope: '@quadrosystems'
+      - name: Installing dependencies
+        run: yarn install
+      - name: Building application
+        run: yarn build
+      - name: Publishing package
+        run: yarn publish --access public
