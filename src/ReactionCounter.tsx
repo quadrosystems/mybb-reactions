@@ -115,7 +115,6 @@ const ReactionCounter: React.FC<ReactionCounterProps> = (props) => {
       )}
       ref={buttonRef}
       onClick={() => {
-        hideTooltip();
         if (!disabled) {
           onClick && onClick(reactionCode);
         }
