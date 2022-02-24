@@ -1,10 +1,12 @@
 import React from 'react';
 import Tippy from '@tippyjs/react';
+import { sticky } from 'tippy.js';
 import * as EmojiMart from 'emoji-mart';
 import cx from 'classnames';
 
 import * as emojiUtils from './utils/emoji';
 import * as api from './api';
+import logger from './utils/logger';
 
 const ReactionCounterTooltipContent: React.FC<{ users: api.UserData[] }> = (props) => {
   const { users } = props;
@@ -33,7 +35,7 @@ const ReactionCounterTooltipContent: React.FC<{ users: api.UserData[] }> = (prop
   }
 
   const parts: [string, string, React.CSSProperties['fontWeight']][] = [];
-  parts.push(['Прореагировали ', `part-1`, 'normal']);
+  parts.push([users.length !== 1 ? 'Прореагировали ' : 'Прореагировал ', `part-1`, 'normal']);
   names.forEach((name, ix) => {
     parts.push([name, `part-name-${name}`, 'bold']);
     if (ix !== names.length-1) {
@@ -61,6 +63,7 @@ const ReactionCounterTooltipContent: React.FC<{ users: api.UserData[] }> = (prop
 
 }
 
+
 type ReactionCounterProps = {
   reactionCode: string;
   users: api.UserData[];
@@ -71,11 +74,24 @@ type ReactionCounterProps = {
 const ReactionCounter: React.FC<ReactionCounterProps> = (props) => {
   const { reactionCode, users, disabled, onClick } = props;
 
-  const handleClick = () => {
-    if (!disabled) {
-      onClick && onClick(reactionCode);
-    }
-  }
+  const [tooltipVisible, setTooltipVisible] = React.useState(false);
+  const showTooltip = () => { setTooltipVisible(true); };
+  const hideTooltip = () => { setTooltipVisible(false); }
+
+  const buttonRef = React.useRef<HTMLButtonElement>(null);
+
+  React.useEffect(() => {
+    const handleTouchStart = (event: TouchEvent) => {
+      logger.info(event);
+      if (buttonRef.current && !buttonRef.current.contains(event.target as Node)) {
+        hideTooltip();
+      }
+    };
+    document.addEventListener('touchstart', handleTouchStart);
+    return () => {
+      document.removeEventListener('touchstart', handleTouchStart);
+    };
+  }, [buttonRef]);
 
   const currentUserId: number = (window as any)['UserID'];
 
@@ -97,7 +113,22 @@ const ReactionCounter: React.FC<ReactionCounterProps> = (props) => {
         { "reaction-chip--clicked": reacted },
         { 'reaction-chip--disabled': disabled },
       )}
-      onClick={handleClick}
+      ref={buttonRef}
+      onClick={() => {
+        hideTooltip();
+        if (!disabled) {
+          onClick && onClick(reactionCode);
+        }
+      }}
+      onMouseEnter={() => {
+        showTooltip();
+      }}
+      onMouseLeave={() => {
+        hideTooltip();
+      }}
+      onTouchStart={() => {
+        showTooltip();
+      }}
     >
       <span className="reaction-counter__emoji">
         <EmojiMart.Emoji
@@ -111,13 +142,18 @@ const ReactionCounter: React.FC<ReactionCounterProps> = (props) => {
         {count.toString()}
       </span>
     </button>
-  )
+  );
 
   return (
-    <Tippy content={renderedTooltipContent}>
+    <Tippy
+      content={renderedTooltipContent}
+      visible={tooltipVisible}
+      onClickOutside={hideTooltip}
+      sticky={true}
+      plugins={[sticky]}
+    >
       {renderedButton}
     </Tippy>
-
   );
 }
 

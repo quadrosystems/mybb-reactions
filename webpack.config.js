@@ -17,6 +17,9 @@ module.exports = {
     hot: false,
     liveReload: false,
     allowedHosts: 'all',
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+    },
 
     host: host,
     port: port,
