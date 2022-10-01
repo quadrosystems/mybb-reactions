@@ -17,6 +17,7 @@ export type Config = {
     category?: string,
   }[],
   includeCategories: NormalCategory[],
+  elem_selector: string,
   debug: boolean,
   disable: boolean,
 }
@@ -50,6 +51,7 @@ const validateConfig = (config: Config) => {
 const DEFAULT_CONFIG: Config = {
   customEmojis: [],
   includeCategories: ALL_NORMAL_CATEGORIES,
+  elem_selector: '.post-body',
   debug: process.env.NODE_ENV === 'development' ? true : false,
   disable: false,
 };
@@ -132,7 +134,7 @@ const run = async () => {
     createdElement = React.createElement(React.StrictMode, null, createdElement);
     ReactDOM.render(createdElement, reactElem);
 
-    postElem.querySelector('.post-body').append(reactElem);
+    postElem.querySelector(config.elem_selector).append(reactElem);
 
   });
 
