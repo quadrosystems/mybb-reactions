@@ -141,6 +141,11 @@ const run = async () => {
 const init = async () => {
   setConfig({});
 
+  if (document.location.pathname !== '/viewtopic.php') {
+    logger.debug('Page path is not "/viewtopic.php", plugin will not be loaded.')
+    return
+  }
+
   if (document.readyState === "loading") {
     window.addEventListener('DOMContentLoaded', () => {
       run();
