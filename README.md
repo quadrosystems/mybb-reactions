@@ -44,7 +44,7 @@ ReactionsPlugin.setConfig({
 | ---- | :--: | ------- | ----------- |
 | `debug` | _boolean_ | false | Выводить в консоль доп. инфу для разработчика |
 | `disable` | _boolean_ | false | Отключить плагин |
-| `elem_selector` | _string_ | `'.post-body'` | CSS-селектор определяющий положение панели реакций внутри поста |
+| `elemSelector` | _string_ | `'.post-body'` | CSS-селектор определяющий положение панели реакций внутри поста |
 | `includeCategories` | _Array\<string\>_ | `['people', 'nature', 'foods', 'activity', 'places', 'objects', 'symbols', 'flags']` | Категории эмоджи которые будут отображены в пикере. Значение должно быть подмножеством дефолтного списка. |
 | `customEmojis` | _Array\<Object\>_ | `[]` | Массив кастомных эмоджи. |
 | `customEmojis.*.id` | _string_ | | Айдишник кастомной эмоджи. **Должен начинаться с `'_'`**. (Например: `'_popcat'`.) |
