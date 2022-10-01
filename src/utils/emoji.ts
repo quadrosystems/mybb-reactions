@@ -50,7 +50,7 @@ export const getCustomEmojiDataAll = (): EmojiMart.CustomEmoji[] => {
   return Array.from(CUSTOM_EMOJIS_DATA.values());
 };
 
-// Возвращает null когда костомная эмоджи есть в БД, но нет в конфиге
+// Возвращает null когда кастомная эмоджи есть в БД, но нет в конфиге
 export const getCustomEmojiDataById = (id: string): EmojiMart.CustomEmoji | null => {
   return CUSTOM_EMOJIS_DATA.has(id) ? CUSTOM_EMOJIS_DATA.get(id) : null;
 };
