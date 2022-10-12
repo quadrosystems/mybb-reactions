@@ -97,6 +97,11 @@ $color-chip-clicked-bg-hover: #b6e3ff;
   border-radius: 50%;
 
   width: 26px;
+
+  // Для фикса отображения svg внутри button на iPhone Safari.
+  // Как выяснилось iPhone Safari задаёт много нежданных дефолтных стилей,
+  // в т.ч. button { padding-right: 1em; padding-left: 1em; }
+  padding: 0;
 }
 
 .reaction-picker-panel {
