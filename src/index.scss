@@ -1,6 +1,11 @@
 
 
+@import "../node_modules/tippy.js/dist/tippy";
+
 .reactions-root {
+  @import "../node_modules/modern-normalize/modern-normalize";
+  @import "../node_modules/emoji-mart/css/emoji-mart";
+
   // outline: 1px solid cyan;
   padding: 0 5px;
 }

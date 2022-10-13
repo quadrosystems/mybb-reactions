@@ -124,17 +124,17 @@ const run = async () => {
 
     const postElem = document.getElementById(`p${postData.postId}`);
 
-    const reactElem = document.createElement('div');
-    reactElem.classList.add('reactions-root');
+    const rootElem = document.createElement('div');
+    rootElem.classList.add('reactions-root');
 
     let createdElement: any = React.createElement(
       ReactionsContainer,
       { postId: postData.postId, reactions: postData.reactions }
     );
     createdElement = React.createElement(React.StrictMode, null, createdElement);
-    ReactDOM.render(createdElement, reactElem);
+    ReactDOM.render(createdElement, rootElem);
 
-    postElem.querySelector(config.elemSelector).append(reactElem);
+    postElem.querySelector(config.elemSelector).append(rootElem);
 
   });
 
