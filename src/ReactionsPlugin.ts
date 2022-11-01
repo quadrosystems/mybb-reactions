@@ -20,6 +20,7 @@ export type Config = {
   elemSelector: string,
   debug: boolean,
   disable: boolean,
+  excludeForumIds: number[] | null,
 }
 
 const ALL_NORMAL_CATEGORIES: NormalCategory[] = ['people', 'nature', 'foods', 'activity', 'places', 'objects', 'symbols', 'flags'];
@@ -54,6 +55,7 @@ const DEFAULT_CONFIG: Config = {
   elemSelector: '.post-body',
   debug: process.env.NODE_ENV === 'development' ? true : false,
   disable: false,
+  excludeForumIds: null,
 };
 
 const setConfig = (newConfig?: Partial<Config>) => {
@@ -80,7 +82,16 @@ const setConfig = (newConfig?: Partial<Config>) => {
 const run = async () => {
   logger.info(`Starting run(), config.disable=${config.disable}`);
   if (config.disable) {
-    return
+    return;
+  }
+
+  if (config.excludeForumIds) {
+    const forumId = parseInt(document.getElementById('pun-viewtopic').getAttribute('data-forum-id'), 10);
+    logger.debug(`Current page's forumId: ${forumId}; config.excludeForumIds=[${config.excludeForumIds && config.excludeForumIds.join(',')}]`);
+    if (config.excludeForumIds.includes(forumId)) {
+      logger.info(`This page's forumId is in config.excludeForumIds.`);
+      return;
+    }
   }
 
   const collectPagePostIds = () => {
