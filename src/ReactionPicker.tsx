@@ -8,8 +8,8 @@ const PlusIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 32 448 448"
-    width="20"
-    height="20"
+    width="14"
+    height="14"
     style={{
       color: '#464646',
     }}
