@@ -127,13 +127,13 @@ const ReactionsContainer: React.FC<ReactionsContainerProps> = (props) => {
     <Flipper flipKey={reactionsSorted.map((reactionData) => reactionData.reactionCode).join('')}>
       <div className="reactions-container">
         {(currentUserId !== 1) && (
-        <ReactionPicker
-          disabled={isLoading || (currentUserId === 1)}
-          onSelected={(reactionCode) => {
-            logger.debug('[onSelected()]', reactionCode);
-            toggleReaction(reactionCode);
-          }}
-        />
+          <ReactionPicker
+            disabled={isLoading || (currentUserId === 1)}
+            onSelected={(reactionCode) => {
+              logger.debug('[onSelected()]', reactionCode);
+              toggleReaction(reactionCode);
+            }}
+          />
         )}
         <div className="reaction-counters-container">
           {renderedReactionCounters}
