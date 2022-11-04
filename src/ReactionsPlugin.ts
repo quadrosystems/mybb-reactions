@@ -11,16 +11,19 @@ import logger from './utils/logger';
 type NormalCategory = 'people' | 'nature' | 'foods' | 'activity' | 'places' | 'objects' | 'symbols' | 'flags';
 
 export type Config = {
+  debug: boolean,
+  disable: boolean,
+  elemSelector: string,
+  includeCategories: NormalCategory[],
   customEmojis: {
     id: string,
     url: string,
     category?: string,
   }[],
-  includeCategories: NormalCategory[],
-  elemSelector: string,
-  debug: boolean,
-  disable: boolean,
   excludeForumIds: number[] | null,
+  includeForumIds: number[] | null,
+  excludeForumCategoryIds: number[] | null,
+  includeForumCategoryIds: number[] | null,
 }
 
 const ALL_NORMAL_CATEGORIES: NormalCategory[] = ['people', 'nature', 'foods', 'activity', 'places', 'objects', 'symbols', 'flags'];
@@ -50,12 +53,15 @@ const validateConfig = (config: Config) => {
 }
 
 const DEFAULT_CONFIG: Config = {
-  customEmojis: [],
-  includeCategories: ALL_NORMAL_CATEGORIES,
-  elemSelector: '.post-body',
   debug: process.env.NODE_ENV === 'development' ? true : false,
   disable: false,
+  elemSelector: '.post-body',
+  includeCategories: ALL_NORMAL_CATEGORIES,
+  customEmojis: [],
   excludeForumIds: null,
+  includeForumIds: null,
+  excludeForumCategoryIds: null,
+  includeForumCategoryIds: null,
 };
 
 const setConfig = (newConfig?: Partial<Config>) => {
@@ -85,14 +91,45 @@ const run = async () => {
     return;
   }
 
-  if (config.excludeForumIds) {
-    const forumId = parseInt(document.getElementById('pun-viewtopic').getAttribute('data-forum-id'), 10);
-    logger.debug(`Current page's forumId: ${forumId}; config.excludeForumIds=[${config.excludeForumIds && config.excludeForumIds.join(',')}]`);
-    if (config.excludeForumIds.includes(forumId)) {
-      logger.info(`This page's forumId is in config.excludeForumIds.`);
-      return;
-    }
+
+  const forumId = parseInt(document.getElementById('pun-viewtopic').getAttribute('data-forum-id'), 10);
+  logger.debug([
+    `Current page's forumId=${forumId};`,
+    `config.excludeForumIds=${config.excludeForumIds && ('[' + config.excludeForumIds.join(',') + '];')}`,
+    `config.includeForumIds=${config.includeForumIds && ('[' + config.includeForumIds.join(',') + '];')}`,
+  ].join(' '));
+  if (config.excludeForumIds && config.includeForumIds) {
+    logger.error(`Options excludeForumIds and includeForumIds can't be used simultaneously.`);
+    return;
   }
+  if (config.excludeForumIds && config.excludeForumIds.includes(forumId)) {
+    logger.info(`This page's forumId is in config.excludeForumIds.`);
+    return;
+  }
+  if (config.includeForumIds && !config.includeForumIds.includes(forumId)) {
+    logger.info(`This page's forumId is not in config.includeForumIds.`);
+    return;
+  }
+
+  const forumCategoryId = parseInt(document.getElementById('pun-viewtopic').getAttribute('data-cat-id'), 10);
+  logger.debug([
+    `Current page's forumCategoryId=${forumCategoryId};`,
+    `config.excludeForumCategoryIds=${config.excludeForumCategoryIds && ('[' + config.excludeForumCategoryIds.join(',') + '];')}`,
+    `config.includeForumCategoryIds=${config.includeForumCategoryIds && ('[' + config.includeForumCategoryIds.join(',') + '];')}`,
+  ].join(' '));
+  if (config.excludeForumCategoryIds && config.includeForumCategoryIds) {
+    logger.error(`Options excludeForumCategoryIds and includeForumCategoryIds can't be used simultaneously.`);
+    return;
+  }
+  if (config.excludeForumCategoryIds && config.excludeForumCategoryIds.includes(forumCategoryId)) {
+    logger.info(`This page's forumCategoryId is in config.excludeForumCategoryIds.`);
+    return;
+  }
+  if (config.includeForumCategoryIds && !config.includeForumCategoryIds.includes(forumCategoryId)) {
+    logger.info(`This page's forumCategoryId is not in config.includeForumCategoryIds.`);
+    return;
+  }
+
 
   const collectPagePostIds = () => {
     return Array.from(document.querySelectorAll('.post')).map((elem) => {
