@@ -20,10 +20,13 @@ export type Config = {
     url: string,
     category?: string,
   }[],
+  excludeTopicIds: number[] | null,
+  includeTopicIds: number[] | null,
   excludeForumIds: number[] | null,
   includeForumIds: number[] | null,
   excludeForumCategoryIds: number[] | null,
   includeForumCategoryIds: number[] | null,
+  // limitReactionsNumber: number,
 }
 
 const ALL_NORMAL_CATEGORIES: NormalCategory[] = ['people', 'nature', 'foods', 'activity', 'places', 'objects', 'symbols', 'flags'];
@@ -58,10 +61,13 @@ const DEFAULT_CONFIG: Config = {
   elemSelector: '.post-body',
   includeCategories: ALL_NORMAL_CATEGORIES,
   customEmojis: [],
+  excludeTopicIds: null,
+  includeTopicIds: null,
   excludeForumIds: null,
   includeForumIds: null,
   excludeForumCategoryIds: null,
   includeForumCategoryIds: null,
+  // limitReactionsNumber: 0,
 };
 
 const setConfig = (newConfig?: Partial<Config>) => {
@@ -91,6 +97,25 @@ const run = async () => {
     return;
   }
 
+
+  const topicId = parseInt(document.getElementById('pun-viewtopic').getAttribute('data-topic-id'), 10);
+  logger.debug([
+    `Current page's topicId=${topicId};`,
+    `config.excludeTopicIds=${config.excludeTopicIds && ('[' + config.excludeTopicIds.join(',') + '];')}`,
+    `config.includeTopicIds=${config.includeTopicIds && ('[' + config.includeTopicIds.join(',') + '];')}`,
+  ].join(' '));
+  if (config.excludeTopicIds && config.includeTopicIds) {
+    logger.error(`Options excludeTopicIds and includeTopicIds can't be used simultaneously.`);
+    return;
+  }
+  if (config.excludeTopicIds && config.excludeTopicIds.includes(topicId)) {
+    logger.info(`This page's topicId is in config.excludeTopicIds.`);
+    return;
+  }
+  if (config.includeTopicIds && !config.includeTopicIds.includes(topicId)) {
+    logger.info(`This page's topicId is not in config.includeTopicIds.`);
+    return;
+  }
 
   const forumId = parseInt(document.getElementById('pun-viewtopic').getAttribute('data-forum-id'), 10);
   logger.debug([
@@ -206,6 +231,11 @@ const init = async () => {
 }
 
 init();
+
+
+// Так экспортировать конфиг для использования в реакт-компонентах - спорное решение,
+// но самое удобное пока.
+export { config };
 
 export default {
   config,
