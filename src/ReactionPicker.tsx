@@ -30,7 +30,7 @@ type ReactionPickerProps = {
 
 
 const ReactionPicker: React.FC<ReactionPickerProps> = (props) => {
-  const { onSelected, disabled } = props;
+  const { disabled, onSelected } = props;
 
   const [isOpen, setIsOpen] = React.useState(false);
 
@@ -66,7 +66,6 @@ const ReactionPicker: React.FC<ReactionPickerProps> = (props) => {
           }
         }}
       >
-        {/* <span>{'+'}</span> */}
         <PlusIcon />
       </button>
       {isOpen && (

@@ -26,7 +26,7 @@ export type Config = {
   includeForumIds: number[] | null,
   excludeForumCategoryIds: number[] | null,
   includeForumCategoryIds: number[] | null,
-  // limitReactionsNumber: number,
+  limitReactionsNumber: number,
 }
 
 const ALL_NORMAL_CATEGORIES: NormalCategory[] = ['people', 'nature', 'foods', 'activity', 'places', 'objects', 'symbols', 'flags'];
@@ -67,7 +67,7 @@ const DEFAULT_CONFIG: Config = {
   includeForumIds: null,
   excludeForumCategoryIds: null,
   includeForumCategoryIds: null,
-  // limitReactionsNumber: 0,
+  limitReactionsNumber: 0,
 };
 
 const setConfig = (newConfig?: Partial<Config>) => {

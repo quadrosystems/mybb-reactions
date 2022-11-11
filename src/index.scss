@@ -128,3 +128,14 @@ $color-chip-clicked-bg-hover: #b6e3ff;
   border-radius: 50%;
   animation: icon-spin 0.6s linear infinite;
 }
+
+
+.reaction-limit-tooltip-content {
+  max-width: 300px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.reaction-limit-tooltip-tippy-box {
+  background-color: #330303d6;
+}

@@ -56,6 +56,7 @@ ReactionsPlugin.setConfig({
 | `includeForumIds` | _Array\<number\> \| null_ | `null` | Включить плагин только на форумах-разделах с указанным айдишниками. Не может быть использовано одновременно с `excludeForumIds`. |
 | `excludeForumCategoryIds` | _Array\<number\> \| null_ | `null` | Отключить плагин в категориях форумов с указанным айдишниками. Не может быть использовано одновременно с `includeForumCategoryIds`. |
 | `includeForumCategoryIds` | _Array\<number\> \| null_ | `null` | Включить плагин только в категориях форумов с указанным айдишниками. Не может быть использовано одновременно с `excludeForumCategoryIds`. |
+| `limitReactionsNumber` | _number_ | `0` | Ограничить кол-во реакций которое может оставить один пользователь. 0 - неограниченно. |
 
 
 ## Запуск dev-сервера

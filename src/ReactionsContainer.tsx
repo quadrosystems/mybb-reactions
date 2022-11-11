@@ -1,11 +1,14 @@
 import React from 'react';
 import { Flipper, Flipped } from 'react-flip-toolkit';
+import Tippy from '@tippyjs/react';
+import { sticky } from 'tippy.js';
 
 import ReactionCounter from './ReactionCounter';
 import ReactionPicker from './ReactionPicker';
 import LoadingIcon from './LoadingIcon';
 import * as api from './api';
 import logger from './utils/logger';
+import { config } from './ReactionsPlugin';
 
 // Сортировка по кол-ву и дате, в убывающем порядке.
 const reactionsComparator = (reactionA: api.ReactionData, reactionB: api.ReactionData) => {
@@ -15,15 +18,9 @@ const reactionsComparator = (reactionA: api.ReactionData, reactionB: api.Reactio
   const lastReactedAtA = Math.max( ...reactionA.users.map(({ reactedAt }) => reactedAt) );
   const lastReactedAtB = Math.max( ...reactionB.users.map(({ reactedAt }) => reactedAt) );
 
-  if (countA > countB) {
-    return -1;
-  }
-  if (countA < countB) {
-    return 1;
-  }
-  if (countA === countB) {
-    return lastReactedAtB - lastReactedAtA;
-  }
+  if (countA > countB) { return -1; }
+  if (countA < countB) { return 1; }
+  if (countA === countB) { return lastReactedAtB - lastReactedAtA; }
 }
 
 type ReactionsContainerProps = {
@@ -36,10 +33,19 @@ const ReactionsContainer: React.FC<ReactionsContainerProps> = (props) => {
 
   const [reactions, setReactions] = React.useState<api.ReactionData[]>(initialReactions);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [limitTooltipVisible, setLimitTooltipVisible] = React.useState(false);
 
   const currentUserId: number = (window as any)['UserID'];
   const currentUserLogin: string = (window as any)['UserLogin'];
   const currentBoardID: number = (window as any)['BoardID'];
+
+
+  const reactionsSorted = [...reactions].sort(reactionsComparator);
+
+  const currentUserReactionsNumber = reactionsSorted.reduce((n, reaction) => {
+    return (reaction.users.some((user) => user.userId === currentUserId)) ? (n + 1) : n;
+  }, 0);
+  const isReactionsLimitReached = (config.limitReactionsNumber !== 0) && (currentUserReactionsNumber >= config.limitReactionsNumber);
 
 
   const toggleReaction = (reactionCode: string) => {
@@ -74,6 +80,15 @@ const ReactionsContainer: React.FC<ReactionsContainerProps> = (props) => {
     } else {
       // add
 
+      // Do not add reaction if limit is reached
+      if (isReactionsLimitReached) {
+        setLimitTooltipVisible(true);
+        setTimeout(() => {
+          setLimitTooltipVisible(false);
+        }, 1500);
+        return;
+      }
+
       const newUser = {
         userId: currentUserId,
         userLogin: currentUserLogin,
@@ -107,7 +122,11 @@ const ReactionsContainer: React.FC<ReactionsContainerProps> = (props) => {
     toggleReaction(reactionCode);
   }
 
-  const reactionsSorted = reactions.sort(reactionsComparator);
+  const renderedLimitTooltipContent = (
+    <div className='reaction-limit-tooltip-content'>
+      {`Вы не можете оставить больше ${config.limitReactionsNumber} реакций`}
+    </div>
+  );
 
   const renderedReactionCounters = reactionsSorted.map((reactionData) => (
     <Flipped key={reactionData.reactionCode} flipId={reactionData.reactionCode}>
@@ -122,27 +141,41 @@ const ReactionsContainer: React.FC<ReactionsContainerProps> = (props) => {
     </Flipped>
   ));
 
-
   return (
-    <Flipper flipKey={reactionsSorted.map((reactionData) => reactionData.reactionCode).join('')}>
-      <div className="reactions-container">
-        {(currentUserId !== 1) && (
-          <ReactionPicker
-            disabled={isLoading || (currentUserId === 1)}
-            onSelected={(reactionCode) => {
-              logger.debug('[onSelected()]', reactionCode);
-              toggleReaction(reactionCode);
-            }}
-          />
-        )}
-        <div className="reaction-counters-container">
-          {renderedReactionCounters}
-          {isLoading ? (
-            <LoadingIcon size={26} />
-          ) : null}
-        </div>
+    <Tippy
+      content={renderedLimitTooltipContent}
+      className="reaction-limit-tooltip-tippy-box"
+      visible={limitTooltipVisible}
+      placement="bottom-start"
+      arrow={false}
+      sticky={true}
+      plugins={[sticky]}
+    >
+      <div>
+        <Flipper flipKey={[
+          Number((currentUserId !== 1) && !isReactionsLimitReached).toString(),
+          ...reactionsSorted.map((reactionData) => reactionData.reactionCode),
+        ].join('|')}>
+          <div className="reactions-container">
+            {(currentUserId !== 1) && !isReactionsLimitReached && (
+              <ReactionPicker
+                disabled={isLoading || (currentUserId === 1)}
+                onSelected={(reactionCode) => {
+                  logger.debug('[onSelected()]', reactionCode);
+                  toggleReaction(reactionCode);
+                }}
+              />
+            )}
+            <div className="reaction-counters-container">
+              {renderedReactionCounters}
+              {isLoading ? (
+                <LoadingIcon size={26} />
+              ) : null}
+            </div>
+          </div>
+        </Flipper>
       </div>
-    </Flipper>
+    </Tippy>
   );
 }
 

@@ -82,7 +82,6 @@ const ReactionCounter: React.FC<ReactionCounterProps> = (props) => {
 
   React.useEffect(() => {
     const handleTouchStart = (event: TouchEvent) => {
-      logger.info(event);
       if (buttonRef.current && !buttonRef.current.contains(event.target as Node)) {
         hideTooltip();
       }
@@ -119,15 +118,9 @@ const ReactionCounter: React.FC<ReactionCounterProps> = (props) => {
           onClick && onClick(reactionCode);
         }
       }}
-      onMouseEnter={() => {
-        showTooltip();
-      }}
-      onMouseLeave={() => {
-        hideTooltip();
-      }}
-      onTouchStart={() => {
-        showTooltip();
-      }}
+      onMouseEnter={() => { showTooltip(); }}
+      onMouseLeave={() => { hideTooltip(); }}
+      onTouchStart={() => { showTooltip(); }}
     >
       <span className="reaction-counter__emoji">
         <EmojiMart.Emoji
