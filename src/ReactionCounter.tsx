@@ -30,6 +30,7 @@ const ReactionCounterTooltipContent: React.FC<{ users: api.UserData[] }> = (prop
       } else {
         names.pop();
         names.unshift('Вы');
+        skippedCount += 1;
       }
     }
   }
