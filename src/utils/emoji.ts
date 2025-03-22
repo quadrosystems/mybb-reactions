@@ -93,7 +93,7 @@ export const getI18nConfig = () => {
 
   return {
     search: 'Поиск',
-    clear: 'Очистить', // Accessible label on "clear" button
+    clear: 'Очистить',
     notfound: 'Ничего не найдено',
     categories: {
       search: 'Результаты поиска',
@@ -110,7 +110,7 @@ export const getI18nConfig = () => {
       custom: 'Кастомные',
     },
     categorieslabel: 'Категории',
-  }
+  };
 }
 
 // -----------------------------------------------------------------------------

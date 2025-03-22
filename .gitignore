@@ -4,3 +4,5 @@ dist
 .vscode
 _NOTES
 .idea
+
+.DS_Store
