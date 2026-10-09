@@ -53,6 +53,7 @@ export async function callRusff(method: string, params: any): Promise<any> {
     "partner_id": (window as any)['PartnerID'],
     "sign": (window as any)['ForumAPITicket'],
     "user_id": (window as any)['UserID'],
+    "user_login": (window as any)['UserLogin'] || '',
     "user_lastvisit": (window as any)['UserLastVisit'],
   };
 
@@ -123,12 +124,37 @@ export async function reactionsAdd(
   postId: number,
   reactionCode: string,
 ): Promise<any> {
-  const params = {
+  const params: Record<string, any> = {
     'board_id': boardId,
     'user_id': userId,
     'post_id': postId,
     'reaction_code': reactionCode,
   };
+  // Same-origin API uses the forum session, including access to private topics.
+  // Core/qnode treat this as a hint; the recipient verifies ownership before a notice is shown.
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 5000);
+    try {
+      const query = new URLSearchParams({method: 'post.get', post_id: String(postId),
+        fields: 'id,user_id', limit: '1', format: 'json', charset: 'utf-8'});
+      const response = await fetch('/api.php?' + query.toString(), {
+        credentials: 'same-origin', signal: controller.signal,
+      });
+      if (response.ok) {
+        const result = await response.json();
+        const posts = result && !result.error && result.response;
+        if (Array.isArray(posts) && posts.length === 1 && String(posts[0].id) === String(postId) &&
+            /^[1-9][0-9]*$/.test(String(posts[0].user_id)) && Number.isSafeInteger(Number(posts[0].user_id))) {
+          params.post_author_id = Number(posts[0].user_id);
+        }
+      }
+    } finally {
+      clearTimeout(timeout);
+    }
+  } catch (error) {
+    // Metadata/network failures must not prevent saving the user's reaction.
+  }
   return await callRusff('reactions/add', params);
 }
 
