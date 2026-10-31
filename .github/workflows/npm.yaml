@@ -1,6 +1,8 @@
 name: Build and publish to NPM
 on:
   push:
+    branches:
+      - 'npm-release-1.2.3'
     tags:
       - '**'
 jobs:
