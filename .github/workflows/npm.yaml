@@ -1,6 +1,8 @@
 name: Build and publish to NPM
 on:
   push:
+    branches:
+      - 'npm-release-1.2.3'
     tags:
       - '**'
 jobs:
@@ -19,4 +21,12 @@ jobs:
       - name: Building application
         run: yarn build
       - name: Publishing package
-        run: yarn publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          if [ -z "$NODE_AUTH_TOKEN" ]; then
+            echo "::error::NPM_TOKEN is not configured. Add a publishing token for @quadrosystems/mybb-reactions to this repository's Actions secrets."
+            exit 1
+          fi
+          npm whoami --registry=https://registry.npmjs.org
+          yarn publish --access public --non-interactive
