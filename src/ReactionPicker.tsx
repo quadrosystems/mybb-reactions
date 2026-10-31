@@ -4,6 +4,8 @@ import cx from 'classnames';
 
 import * as emojiUtils from './utils/emoji';
 
+const EMOJIS_PER_LINE = 9;
+
 const PlusIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -31,6 +33,7 @@ type ReactionPickerProps = {
 
 const ReactionPicker: React.FC<ReactionPickerProps> = (props) => {
   const { disabled, onSelected } = props;
+  const isDisabled = disabled || !emojiUtils.hasAvailableReactions();
 
   const [isOpen, setIsOpen] = React.useState(false);
 
@@ -58,19 +61,21 @@ const ReactionPicker: React.FC<ReactionPickerProps> = (props) => {
           'reaction-picker-button',
           'reaction-chip',
           // { "reaction-chip--clicked": isOpen },
-          { 'reaction-chip--disabled': disabled },
+          { 'reaction-chip--disabled': isDisabled },
         )}
         onClick={() => {
-          if (!disabled) {
+          if (!isDisabled) {
             setIsOpen(!isOpen);
           }
         }}
       >
         <PlusIcon />
       </button>
-      {isOpen && (
+      {isOpen && !isDisabled && (
         <div className="reaction-picker-panel">
           <EmojiMartPicker
+            {...emojiUtils.getRecentPickerProps(EMOJIS_PER_LINE)}
+            perLine={EMOJIS_PER_LINE}
             set='apple'
             showSkinTones={false}
             showPreview={false}
@@ -78,6 +83,11 @@ const ReactionPicker: React.FC<ReactionPickerProps> = (props) => {
             emojiSize={20}
             custom={emojiUtils.getCustomEmojiDataAll()}
             onSelect={(emoji: EmojiMart.EmojiData) => {
+              if (!emojiUtils.isReactionCodeInConfig(emoji.id)) {
+                return;
+              }
+              // A controlled recent list disables emoji-mart's history updates.
+              EmojiMart.frequently.add(emoji);
               setIsOpen(false);
               onSelected && onSelected(emoji.id);
             }}
