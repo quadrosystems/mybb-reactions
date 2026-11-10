@@ -84,6 +84,21 @@ export const isReactionCodeInConfig = (reactionCode: string) => {
   }
 }
 
+export const getRecentPickerProps = (perLine: number) => {
+  // emoji-mart 3 ignores include/exclude when building the recent list.
+  const recent = EmojiMart.frequently.get(perLine).filter(isReactionCodeInConfig);
+
+  return {
+    recent,
+    // In 3.0.1 an empty recent array crashes Category.getEmojis().
+    exclude: recent.length ? [] : ['recent'],
+  };
+};
+
+export const hasAvailableReactions = () => {
+  return ALL_NORMAL_REACTION_CODES.length > 0 || CUSTOM_EMOJIS_DATA.size > 0;
+};
+
 export const getI18nConfig = () => {
   const userLanguage = (window as any)['UserLanguage'];
 
