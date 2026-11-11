@@ -74,8 +74,9 @@ const ReactionsContainer: React.FC<ReactionsContainerProps> = (props) => {
       api.reactionsDelete(currentBoardID, currentUserId, postId, reactionCode)
         .then(() => {
           setReactions(newReactions);
-          setIsLoading(false);
-        });
+        })
+        .catch((error) => { logger.error('Не удалось сохранить реакцию', error); })
+        .finally(() => { setIsLoading(false); });
 
     } else {
       // add
@@ -110,8 +111,9 @@ const ReactionsContainer: React.FC<ReactionsContainerProps> = (props) => {
       api.reactionsAdd(currentBoardID, currentUserId, postId, reactionCode)
         .then(() => {
           setReactions(newReactions);
-          setIsLoading(false);
-        });
+        })
+        .catch((error) => { logger.error('Не удалось сохранить реакцию', error); })
+        .finally(() => { setIsLoading(false); });
 
     }
   };
